@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+			<link rel="stylesheet" type="text/css" href="style/style.css"/>
+			<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<p>这是一段测试文档</p>
+		<div id="div1" style="width: 360px;">
+		    <form id="form1" target="upload" role="form" method="post" action="" enctype="multipart/form-data">
+		        <fieldset>
+		            <legend>表单1</legend>
+		            <input class="path" type="text" name="userName" readonly="readonly"/><br/><br/>
+					<input class="path" type="text" name="address" readonly="readonly"/><br/><br/>
+					<input type="file" name="file"/><br/><br/>
+					<label>图片预览</label>
+					<div style="height: 100px;">
+						<img id="Img" width="107px;">
+					</div>
+		            <button>提交</button>
+		        </fieldset>
+		    </form>
+		</div>
+		<a href="" download="1.png">PC端下载</a>
+		<iframe name="upload" style="display: none;"></iframe>
+		
+	</body>
+</html>
+<script>
+	$(function(){
+		$("p").on('click',function(){
+			$.ajax({
+				type:"get",
+				url:"/json",
+				async:false,
+				data:{
+					type:'user1'
+				},
+				success:function(data){
+					console.log(data);
+				},
+				error:function(err){
+					console.log(err);
+				}
+			});
+//			console.log($($('iframe')[0].contentDocument).find('body').text());
+		})
+		$("button").on('click',function(e){
+			var e=e||window.event;
+			e.preventDefault();
+			var pic = $('input[type=file]')[0].files[0];
+　　			var formData = new FormData();
+//			$('form').attr("action",'/post');
+			$('form').attr("action",'/load');
+			$('form').submit();
+		})
+		$("a").on('click',function(e){
+			if($(this).attr('href')==""||$(this).attr('href').trim()==""){
+				var e=e||window.event;
+				e.preventDefault();
+			}
+			
+		})
+	})
+</script>
+<script>
+	function PreviewImage(fileObj, imgPreviewId, divPreviewId) {
+		var allowExtention = ".jpg,.bmp,.gif,.png"; //允许上传文件的后缀名document.getElementById("hfAllowPicSuffix").value;  
+		var extention = fileObj.value.substring(fileObj.value.lastIndexOf(".") + 1).toLowerCase();
+		var browserVersion = window.navigator.userAgent.toUpperCase();
+		if (allowExtention.indexOf(extention) > -1) {
+			if (fileObj.files) { //HTML5实现预览，兼容chrome、火狐7+等  
+				if (window.FileReader) {
+					var reader = new FileReader();
+					reader.onload = function(e) {
+						document.getElementById(imgPreviewId).setAttribute("src", e.target.result);
+					}
+					reader.readAsDataURL(fileObj.files[0]);
+				} else if (browserVersion.indexOf("SAFARI") > -1) {
+					alert("不支持Safari6.0以下浏览器的图片预览!");
+				}
+			} else if (browserVersion.indexOf("MSIE") > -1) {
+				if (browserVersion.indexOf("MSIE 6") > -1) { //ie6  
+					document.getElementById(imgPreviewId).setAttribute("src", fileObj.value);
+				} else { //ie[7-9]  
+					fileObj.select();
+					if (browserVersion.indexOf("MSIE 9") > -1)
+						fileObj.blur(); //不加上document.selection.createRange().text在ie9会拒绝访问  
+					var newPreview = document.getElementById(divPreviewId + "New");
+					if (newPreview == null) {
+						newPreview = document.createElement("div");
+						newPreview.setAttribute("id", divPreviewId + "New");
+						newPreview.style.width = document.getElementById(imgPreviewId).width + "px";
+						newPreview.style.height = document.getElementById(imgPreviewId).height + "px";
+						newPreview.style.border = "solid 1px #d2e2e2";
+					}
+					newPreview.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale',src='" + document.selection.createRange().text + "')";
+					var tempDivPreview = document.getElementById(divPreviewId);
+					tempDivPreview.parentNode.insertBefore(newPreview, tempDivPreview);
+					tempDivPreview.style.display = "none";
+				}
+			} else if (browserVersion.indexOf("FIREFOX") > -1) { //firefox  
+				var firefoxVersion = parseFloat(browserVersion.toLowerCase().match(/firefox\/([\d.]+)/)[1]);
+				if (firefoxVersion < 7) { //firefox7以下版本  
+					document.getElementById(imgPreviewId).setAttribute("src", fileObj.files[0].getAsDataURL());
+				} else { //firefox7.0+                      
+					document.getElementById(imgPreviewId).setAttribute("src", window.URL.createObjectURL(fileObj.files[0]));
+				}
+			} else {
+				document.getElementById(imgPreviewId).setAttribute("src", fileObj.value);
+			}
+		} else {
+			alert("仅支持" + allowExtention + "为后缀名的文件!");
+			fileObj.value = ""; //清空选中文件  
+			if (browserVersion.indexOf("MSIE") > -1) {
+				fileObj.select();
+				document.selection.clear();
+			}
+			fileObj.outerHTML = fileObj.outerHTML;
+		}
+	}
+	$("input[name='file']").on("change",function(e){
+		if($(e.target.files)[0].type.indexOf('image')>=0){
+			var read=new FileReader();
+			read.readAsDataURL($('input[type=file]')[0].files[0]);
+			read.onload=function(e){
+				$("a").attr("href",e.target.result);
+			}
+			PreviewImage($("input[name='file']")[0], 'Img');
+		}
+		$(".path").val($("input[name='file']").val());
+	})
+</script>

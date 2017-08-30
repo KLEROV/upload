@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<title>上传</title>
+</head>
+<body>
+
+
+<form method="post" enctype="multipart/form-data" action="" target="upload">
+	<input type="text" name="username"/><br /><br />
+	<input type="text" name="address"/><br /><br />
+  <input type="file" name="thumbnail"/><br /><br />
+  <button>提交</button>
+</form>
+<iframe name="upload" style="display: none;"></iframe>
+</body>
+</html>
+<script type="text/javascript">
+	$(function(){
+		$("input[type=file]").on('change',function(e){
+			var read=new FileReader();
+			console.log(e);
+			console.log($('input[type=file]')[0].files[0]);
+			read.readAsDataURL($('input[type=file]')[0].files[0]);
+			read.onload=function(e){
+				console.log(e);
+//				$("a").attr("href",e.target.result);
+			}
+		})
+		$("button").on('click',function(e){
+			var e=e||window.event;		
+			var file=$('input[type=file]')[0].files[0];
+			e.preventDefault();
+			$('form').attr('action','/upload');
+			$('form').submit();
+//			var formData = new FormData();
+//			$.ajax({
+//				type:"post",
+//				url:"/upload",
+////				data:{
+////					username:$('input[name=username]').val(),
+////					address:$('input[name=address]').val(),
+////					thumbnail:"$('input[name=thumbnail]').val()"
+////				},
+//				data: formData,
+//				async: false,
+//				cache: false,
+//				contentType:false,
+//				processData: false,
+//				success:function(data){
+//					console.log(data);
+//				},
+//				error:function(err){
+//					console.log(err);
+//				}
+//			});
+		})
+	})
+</script>

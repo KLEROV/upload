@@ -1,0 +1,26 @@
+{
+	"user1": {
+		"name": "汉字1",
+		"password": "password1",
+		"profession": "teacher",
+		"id": 1
+	},
+	"user2": {
+		"name": "文字2",
+		"password": "password2",
+		"profession": "librarian",
+		"id": 2
+	},
+	"user3": {
+		"name": "文章3",
+		"password": "password3",
+		"profession": "clerk",
+		"id": 3
+	},
+	"user4": {
+		"name": "汉子4",
+		"password": "password4",
+		"profession": "cjuyuk",
+		"id": 4
+	}
+}

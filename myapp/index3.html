@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+			<link rel="stylesheet" type="text/css" href="style/style.css"/>
+			<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<p>这是一段测试文档</p>
+		<div id="div1" style="width: 360px;">
+		    <form id="form1" target="upload" role="form" method="post" action="" enctype="multipart/form-data">
+		        <fieldset>
+		            <legend>表单1</legend>
+		            <input type="text" name="address"/><br/><br/>
+		            <input type="text" name="username"/><br/><br/>
+					<input type="file" name="file"/><br/><br/>
+		            <button>提交</button>
+		        </fieldset>
+		    </form>
+		</div>
+		<a href="" download="1.png">下载</a>
+		<iframe name="upload" style="display: none;"></iframe>
+		
+	</body>
+</html>
+<script>
+	$(function(){
+		$("button").on('click',function(e){
+			var e=e||window.event;
+			e.preventDefault();
+			var pic = $('input[type=file]')[0].files[0];
+　　			var formData = new FormData();
+			$('form').attr("action",'/load');
+			$('form').submit();
+		})
+	})
+</script>
